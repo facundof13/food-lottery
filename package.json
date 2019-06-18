@@ -1,0 +1,17 @@
+{
+  "name": "food-lottery",
+  "version": "1.0.0",
+  "description": "Let the machine decide your next meal!",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app"
+  },
+  "author": "Facundo Figueroa",
+  "license": "MIT",
+  "dependencies": {
+    "@google/maps": "^0.5.5",
+    "dotenv": "^8.0.0",
+    "express": "^4.17.1"
+  }
+}

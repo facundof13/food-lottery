@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <!-- <link rel="stylesheet" type="text/css" href="../style.css" /> -->
+  <title>Food Lottery</title>
+</head>
+
+<body>
+  <div id="flexbox">
+    <h1>Today's events</h1>
+    <a href="../index.html">Home</a>
+    <div id="eventsPlaceholder">
+    </div>
+  </div>
+  <script>
+    const searchString = "Tacos";
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(position => {
+        const pos = {
+          lat: position.coords.latitude,
+          long: position.coords.longitude
+        }
+        fetch(`/api/${searchString}&${pos.lat}&${pos.long}`)
+        .then(response => {
+          console.log(response);
+        })
+      })
+    }
+  </script>
+</body>
+
+</html>
