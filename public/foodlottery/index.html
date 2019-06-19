@@ -13,22 +13,63 @@
   <div id="flexbox">
     <h1>Today's events</h1>
     <a href="../index.html">Home</a>
-    <div id="eventsPlaceholder">
+    <div id="foodPlaceholder">
+      <form>
+        <select id="selector" onchange="getSearchString()">
+          <option value=null>Select a category</option>
+          <option value="mexican food">Mexican</option>
+          <option value="italian food">Italian</option>
+          <option value="steak">Steak</option>
+          <option value="pizza">Pizza</option>
+          <option value="fast food">Fast Food</option>
+          <option value="brunch">Brunch</option>
+        </select>
+        <input id="otherFoodCategory" type="text" value="Or enter another category"
+          onblur="if (this.value === '') this.value = 'Or enter another category'; getSearchString()"
+          onclick='this.value = ""'>
+          <button onclick="startSearch()">Look for food</button>
+          <!-- todo: fix onclick search -->
+      </form>
     </div>
   </div>
   <script>
-    const searchString = "Tacos";
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(position => {
-        const pos = {
-          lat: position.coords.latitude,
-          long: position.coords.longitude
-        }
-        fetch(`/api/${searchString}&${pos.lat}&${pos.long}`)
-        .then(response => {
-          console.log(response);
-        })
-      })
+    let searchString = '';
+
+    function getSearchString() {
+      const textBoxValue = document.getElementById("otherFoodCategory").value;
+      const selectorValue = document.getElementById("selector").value;
+
+      if (textBoxValue !== "Or enter another category" || textBoxValue === "") {
+        searchString = textBoxValue;
+      } else if (selectorValue !== null) {
+        searchString = selectorValue;
+      } else {
+        searchString = 'food';
+      }
+
+      console.log(`Textbox: ${textBoxValue} \nSelector: ${selectorValue}`);
+    }
+
+
+
+    function startSearch() {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(position => {
+          const pos = {
+            lat: position.coords.latitude,
+            long: position.coords.longitude
+          }
+          fetch(`/api/${searchString}&${pos.lat}&${pos.long}`)
+            .then(response => {
+              console.log(response);
+            });
+        });
+      } else {
+        fetch(`/api/${searchString}&40.7128&74.0060`)
+          .then(response => {
+            console.log(response);
+          });
+      }
     }
   </script>
 </body>
