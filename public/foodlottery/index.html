@@ -5,13 +5,15 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-  <!-- <link rel="stylesheet" type="text/css" href="../style.css" /> -->
+  <link rel="stylesheet" type="text/css" href="../style.css" />
   <title>Food Lottery</title>
+  <script src='winwheel.min.js'></script>
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/gsap/2.1.3/TweenMax.min.js'></script>
 </head>
 
 <body>
   <div id="flexbox">
-    <h1>Today's events</h1>
+    <h1>Food Lottery</h1>
     <a href="../index.html">Home</a>
     <div id="foodPlaceholder">
       <form>
@@ -27,13 +29,24 @@
         <input id="otherFoodCategory" type="text" value="Or enter another category"
           onblur="if (this.value === '') this.value = 'Or enter another category'; getSearchString()"
           onclick='this.value = ""'>
-          <button onclick="startSearch()">Look for food</button>
-          <!-- todo: fix onclick search -->
+        <!-- todo: fix onclick search -->
       </form>
+      <button onclick="startSearch()">Look for food</button>
+      <div id="canvasContainer">
+        <canvas id='canvas' width='400' height='400'>Canvas not supported on this browser!</canvas>
+        <img id='prizepointer' src="win_pointer.png" alt="V" />
+        <button id="spinButton" onclick="spinWheel();">Spin!</button>
+        <button id="resetButton" onclick="resetWheel();">Reset!</button>
+      <div id="winner">
+
+      </div>
+      </div>
     </div>
   </div>
   <script>
     let searchString = '';
+    let wheel;
+    let globalPlaces = [];
 
     function getSearchString() {
       const textBoxValue = document.getElementById("otherFoodCategory").value;
@@ -46,8 +59,6 @@
       } else {
         searchString = 'food';
       }
-
-      console.log(`Textbox: ${textBoxValue} \nSelector: ${selectorValue}`);
     }
 
 
@@ -61,15 +72,74 @@
           }
           fetch(`/api/${searchString}&${pos.lat}&${pos.long}`)
             .then(response => {
-              console.log(response);
+              handleResponse(response);
             });
         });
       } else {
         fetch(`/api/${searchString}&40.7128&74.0060`)
           .then(response => {
-            console.log(response);
+            handleResponse(response);
           });
       }
+    }
+
+    function handleResponse(obj) {
+      obj.json().then(json => {
+        makeWheel(json);
+      });
+    }
+
+    function makeWheel(foodPlaces) {
+      document.getElementById('prizepointer').style.display = 'block';
+      document.getElementById('spinButton').style.display = 'block';
+      document.getElementById('resetButton').style.display = 'block';
+      globalPlaces = foodPlaces;
+
+      wheel = new Winwheel({
+        'textAlignment' : 'inner',
+        'pointerAngle' : 90,
+        'animation' : 
+        {
+          'type' : 'spinToStop',
+          'callbackFinished' : 'appendPrize()'
+        }
+      });
+      for (let i = 0; i < foodPlaces.length; i++) {
+        let newSegment = wheel.addSegment();
+        newSegment.text = foodPlaces[i].name;
+        newSegment.textFontSize = 14;
+        newSegment.fillStyle = '#'+Math.random().toString(16).substr(-6);
+        newSegment.textFillStyle = 'white';
+
+      }
+      wheel.deleteSegment(1);
+      wheel.draw();
+    }
+
+    function spinWheel() {
+      wheel.startAnimation();
+      document.getElementById('spinButton').disabled = true;
+    }
+
+    function resetWheel() {
+      document.getElementById('spinButton').disabled = false;
+      wheel.stopAnimation(false);
+      wheel.rotationAngle = 0;
+      wheel.draw();
+
+      document.getElementById("winner").innerHTML = "";
+    }
+
+    function appendPrize() {
+      let winningSegment = wheel.getIndicatedSegment().text;
+      let winningPlace;
+      for (let i = 0; i < globalPlaces.length; i++) {
+        if (globalPlaces[i].name === winningSegment)
+          winningPlace = globalPlaces[i];
+      }
+      
+      let div = document.getElementById("winner");
+      div.innerHTML += `<p>${winningPlace.name}</p><p>${winningPlace.formatted_address}</p>`
     }
   </script>
 </body>

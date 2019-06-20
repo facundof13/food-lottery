@@ -12,13 +12,12 @@ app.get('/api/:searchstring&:lat&:long', (request, response) => {
   const lat = request.params.lat;
   const long = request.params.long;
 
-  if (searchstring !== '' && searchstring !== null)
+  if (searchstring !== '' && searchstring !== null) {
     if (lat !== null && long !== null) {
       food.callPlacesAPI(searchstring, lat, long)
-        .then(res => {
-          response.send(res);
-        })
+        .then(res => response.send(res));
     }
+  }
 });
 
 module.exports = app;

@@ -1,0 +1,25 @@
+#canvasContainer {
+    position: relative;
+    width: 300px;
+}
+ 
+#canvas {
+    z-index: 1;
+}
+ 
+#prizepointer {
+    position: absolute;
+    left: 400px;
+    top: 175px;
+    z-index: 999;
+    transform: rotate(90deg);
+    display:none;
+}
+
+#spinButton {
+    display: none;
+}
+
+#resetButton{
+    display:none;
+}

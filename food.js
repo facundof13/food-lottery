@@ -19,8 +19,9 @@ async function callPlacesAPI(place, lat, long) {
   return new Promise(async (resolve, reject) => {
     await googleMaps.places({
         query: place,
+        radius: 2000,
         location: [lat, long],
-        radius: 5000
+        type: "food"
       })
       .asPromise()
       .then(function (response) {
