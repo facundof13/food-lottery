@@ -16,7 +16,7 @@
     <h1>Food Lottery</h1>
     <a href="../index.html">Home</a>
     <div id="foodPlaceholder">
-      <form>
+      <!-- <form> -->
         <select id="selector" onchange="getSearchString()">
           <option value=null>Select a category</option>
           <option value="mexican food">Mexican</option>
@@ -29,8 +29,7 @@
         <input id="otherFoodCategory" type="text" value="Or enter another category"
           onblur="if (this.value === '') this.value = 'Or enter another category'; getSearchString()"
           onclick='this.value = ""'>
-        <!-- todo: fix onclick search -->
-      </form>
+      <!-- </form> -->
       <button onclick="startSearch()">Look for food</button>
       <div id="canvasContainer">
         <canvas id='canvas' width='400' height='400'>Canvas not supported on this browser!</canvas>
@@ -96,7 +95,7 @@
       globalPlaces = foodPlaces;
 
       wheel = new Winwheel({
-        'textAlignment' : 'inner',
+        'textAlignment' : 'center',
         'pointerAngle' : 90,
         'animation' : 
         {
@@ -107,7 +106,7 @@
       for (let i = 0; i < foodPlaces.length; i++) {
         let newSegment = wheel.addSegment();
         newSegment.text = foodPlaces[i].name;
-        newSegment.textFontSize = 14;
+        newSegment.textFontSize = 8;
         newSegment.fillStyle = '#'+Math.random().toString(16).substr(-6);
         newSegment.textFillStyle = 'white';
 
@@ -139,6 +138,7 @@
       }
       
       let div = document.getElementById("winner");
+      // console.log(winningPlace);
       div.innerHTML += `<p>${winningPlace.name}</p><p>${winningPlace.formatted_address}</p>`
     }
   </script>

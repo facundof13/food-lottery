@@ -1,10 +1,15 @@
 require('dotenv').config()
 const express = require('express');
 const food = require('./food');
+const compression = require('compression');
+const helmet = require('helmet');
 
 const app = express();
 app.listen(3000, () => console.log('listening at 3000'));
 app.use(express.static('public'));
+
+app.use(compression());
+app.use(helmet());
 
 
 app.get('/api/:searchstring&:lat&:long', (request, response) => {
