@@ -21,7 +21,7 @@ async function callPlacesAPI(place, lat, long) {
         query: place,
         radius: 2000,
         location: [lat, long],
-        type: "food"
+        type: "restaurant"
       })
       .asPromise()
       .then(function (response) {

@@ -22,6 +22,8 @@ app.get('/api/:searchstring&:lat&:long', (request, response) => {
       food.callPlacesAPI(searchstring, lat, long)
         .then(res => response.send(res));
     }
+  } else {
+    response.send("Incorrect Parameters");
   }
 });
 
