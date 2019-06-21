@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta http-equiv="X-UA-Compatible" content="ie=edge" />
   <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<link rel="stylesheet" type="text/css" href="../style.css" />
+  <link rel="stylesheet" type="text/css" href="../style.css" />
   <title>Food Lottery</title>
   <script src='winwheel.min.js'></script>
   <script src='https://cdnjs.cloudflare.com/ajax/libs/gsap/2.1.3/TweenMax.min.js'></script>
@@ -27,8 +27,15 @@
           <option value="fast food">Fast Food</option>
           <option value="brunch">Brunch</option>
         </select>
-        <input id="otherFoodCategory" type="text" value="Or enter another category"
-          onblur="if (this.value === '') this.value = 'Or enter another category'; getSearchString()"
+        <select id="starsFilter" onchange="getFilters()">
+          <option value=5>No rating filter</option>
+          <option value=4>4 or higher</option>
+          <option value=3>3 or higher</option>
+          <option value=2>2 or higher</option>
+          <option value=1>1 or higher</option>
+        </select>
+        <input id="otherFoodCategory" type="text" value="Or another category"
+          onblur="if (this.value === '') this.value = 'Or another category'; getSearchString()"
           onclick='this.value = ""'>
         <button id="searchButton" onclick="startSearch()">Look for food</button>
       </div>

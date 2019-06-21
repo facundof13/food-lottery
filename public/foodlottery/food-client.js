@@ -1,7 +1,8 @@
 let searchString = '';
 let wheel;
 let globalPlaces = [];
-let pastelColorsArr = ["#17223b", "#263859", "#6b778d"]
+let pastelColorsArr = ["#17223b", "#263859", "#6b778d"];
+let rating = 5;
 
 if (window.innerWidth < 500) {
     document.getElementById("canvas").width = window.innerWidth - 15;
@@ -17,7 +18,7 @@ function getSearchString() {
     const textBoxValue = document.getElementById("otherFoodCategory").value;
     const selectorValue = document.getElementById("selector").value;
 
-    if (textBoxValue !== "Or enter another category" || textBoxValue === "") {
+    if (textBoxValue !== "Or another category" || textBoxValue === "") {
         searchString = textBoxValue;
     } else if (selectorValue !== null) {
         searchString = selectorValue;
@@ -54,8 +55,17 @@ function startSearch() {
 
 function handleResponse(obj) {
     obj.json().then(json => {
-        makeWheel(json);
-
+        let filteredPlaces = [];
+        if (rating == 5) {
+            makeWheel(json);
+        } else {
+            for (let i = 0; i < json.length; i++) {
+                if (json[i].rating >= rating) {
+                    filteredPlaces.push(json[i]);
+                }
+            }
+            makeWheel(filteredPlaces);
+        }
     });
 }
 
@@ -76,7 +86,7 @@ function makeWheel(foodPlaces) {
     for (let i = 0; i < foodPlaces.length; i++) {
         let newSegment = wheel.addSegment();
         newSegment.text = foodPlaces[i].name;
-        newSegment.textFontSize = 8;
+        newSegment.textFontSize = 10;
         newSegment.fillStyle = pastelColorsArr[i % pastelColorsArr.length];
         newSegment.textFillStyle = 'white';
 
@@ -109,7 +119,7 @@ function appendPrize() {
 
     let div = document.getElementById("winner");
     console.log(winningPlace);
-    div.innerHTML += `<p>${winningPlace.name}</p><p>${winningPlace.formatted_address}</p><p><a href="http://www.google.com/search?q=${winningPlace.name}" target="_blank">Find this place on Google</a>`
+    div.innerHTML += `<p>${winningPlace.name} | Rating: ${winningPlace.rating}</p><p>${winningPlace.formatted_address}</p><p><a href="http://www.google.com/search?q=${winningPlace.name}" target="_blank">Find this place on Google</a>`
 }
 
 function pauseButtonSpamming(btn) {
@@ -117,4 +127,8 @@ function pauseButtonSpamming(btn) {
     setTimeout(() => {
         btn.disabled = false;
     }, 1000);
+}
+
+function getFilters() {
+    rating = document.getElementById('starsFilter').value;
 }
