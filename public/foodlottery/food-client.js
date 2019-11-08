@@ -62,6 +62,7 @@ async function startSearch() {
             fetch(`/api/${searchString}&${pos.lat}&${pos.long}`)
                 .then(response => {
                     handleResponse(response);
+        document.getElementById('loader').style = "display: none"
                 });
         });
     }
