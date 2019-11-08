@@ -3,6 +3,14 @@ let wheel;
 let globalPlaces = [];
 let pastelColorsArr = ["#17223b", "#263859", "#6b778d"];
 let rating = 5;
+let httpsAvail = location.protocol == 'https:'
+let geoAvail = navigator.geolocation
+console.log(`https: ${httpsAvail}\ngeoLocation: ${geoAvail}`)
+
+const zipcode = document.getElementById("zipcode")
+if (!httpsAvail || !geoAvail) {
+    zipcode.style = 'display: block'
+}
 
 if (window.innerWidth < 500) {
     document.getElementById("canvas").width = window.innerWidth - 15;
@@ -29,12 +37,23 @@ function getSearchString() {
 
 
 
-function startSearch() {
+async function startSearch() {
+    document.getElementById('loader').style = "display: block"
     document.getElementById("searchButton").disabled = true;
-    setTimeout(() => {
+    if (!httpsAvail) {
+        const zip = document.getElementById('zip-box').value;
+        const food = await fetch('/api/zipsearch', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({zip: zip, searchString: searchString})
+        })
+        document.getElementById('loader').style = "display: none"
         document.getElementById("searchButton").disabled = false;
-    }, 1000);
-    if (navigator.geolocation) {
+        handleResponse(food)
+    }
+    else if (geoAvail) {
         navigator.geolocation.getCurrentPosition(position => {
             const pos = {
                 lat: position.coords.latitude,
@@ -45,11 +64,6 @@ function startSearch() {
                     handleResponse(response);
                 });
         });
-    } else {
-        fetch(`/api/${searchString}&40.7128&74.0060`)
-            .then(response => {
-                handleResponse(response);
-            });
     }
 }
 

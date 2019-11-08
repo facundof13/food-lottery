@@ -1,6 +1,6 @@
-require('dotenv').config();
+require("dotenv").config();
 
-const googleMaps = require('@google/maps').createClient({
+const googleMaps = require("@google/maps").createClient({
   key: process.env.API_KEY,
   Promise: Promise
 });
@@ -17,14 +17,15 @@ const googleMaps = require('@google/maps').createClient({
 
 async function callPlacesAPI(place, lat, long) {
   return new Promise(async (resolve, reject) => {
-    await googleMaps.places({
+    await googleMaps
+      .places({
         query: place,
         radius: 2000,
         location: [lat, long],
         type: "restaurant"
       })
       .asPromise()
-      .then(function (response) {
+      .then(function(response) {
         let filteredResults = [];
         for (let i = 0; i < response.json.results.length; i++) {
           found = false;
@@ -33,8 +34,7 @@ async function callPlacesAPI(place, lat, long) {
               found = true;
             }
           }
-          if (!found)
-            filteredResults.push(response.json.results[i]);
+          if (!found) filteredResults.push(response.json.results[i]);
         }
 
         resolve(filteredResults);
@@ -42,12 +42,26 @@ async function callPlacesAPI(place, lat, long) {
         //     console.log(filteredResults[i].name);
         //   }
         //   console.log(filteredResults.length);
-
       });
   });
 }
 
+function geoCode(zip) {
+  return new Promise((res, rej) => {
+    googleMaps.geocode(
+      {
+        address: zip
+      },
+      function(err, response) {
+        if (!err) {
+          res(response.json.results[0].geometry.location);
+        }
+      }
+    );
+  });
+}
 
 module.exports = {
-  callPlacesAPI: callPlacesAPI
-}
+  callPlacesAPI: callPlacesAPI,
+  geoCode: geoCode
+};

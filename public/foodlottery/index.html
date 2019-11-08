@@ -17,6 +17,9 @@
     <h1>Food Lottery</h1>
     <a href="../index.html">Home</a>
     <div id="foodPlaceholder">
+      <div id='zipcode'>
+        <input id='zip-box' type="number" placeholder="Enter your zipcode"</input>
+      </div>
       <div id="options">
         <select id="selector" onchange="getSearchString()">
           <option value=null>Select a category</option>
@@ -39,6 +42,7 @@
           onclick='this.value = ""'>
         <button id="searchButton" onclick="startSearch()">Look for food</button>
       </div>
+      <div id="loader"></div>
       <div id="canvasContainer">
         <canvas id='canvas'>Canvas not supported on this browser!</canvas>
         <img id='prizepointer' src="win_pointer.png" alt="V" />
